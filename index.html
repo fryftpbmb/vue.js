@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    <!-- ＝＝＝＝＝VueライブラリをCDNでインストール＝＝＝＝＝＝ -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>はじめてのVue.js</title>
+    <style>
+        html {
+            color: #8B8888;
+            font-family: 'Roboto', "游ゴシック", "YuGothic", "Yu Gothic", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Arial, "メイリオ", "Meiryo", sans-serif;
+            font-size: 16px;
+            /* letter-spacing: 1.5px; */
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity 2s
+        }
+
+        .fade-enter,
+        .fade-leave-to {
+            opacity: 0
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <img src="img/img01.jpg" alt="">
+        <img src="img/img02.jpg" alt="">
+        <fade-in>
+            <div class="block">
+                {{message}}
+            </div>
+        </fade-in>
+    </div>
+    <!-- ======================= -->
+    <!-- emitとかで -->
+    <!-- インスタンスをもう一個作って親の方コンポーネントで呼び出す -->
+    <script>
+        // ========フェードアウトインスタンス========
+        var FadeIn = {
+            template: `
+           <div>
+               <transition name="fade">
+                   <slot v-if="visible"></slot>
+               </transition>
+           </div>`,
+            data() {
+                return {
+                    visible: false
+                };
+            },
+            methods: {
+                handleScroll() {
+                    if (!this.visible) {
+                        var top = this.$el.getBoundingClientRect().top;
+                        // windouw.innerHeightはスクロールバーを含まないウィンドウ幅
+                        this.visible = top < window.innerHeight + 100;
+                    }
+                }
+            },
+            created() {
+                window.addEventListener('scroll', this.handleScroll);
+            },
+            destroyed() {
+                window.removeEventListener('scroll', this.handleScroll);
+            }
+        }
+        new Vue({
+            el: '#app',
+            components: {
+                'fade-in': FadeIn
+            },
+            data: {
+                message: '生花を扱う edenworks bedroom ドライフラワーショップ EW.Pharmacy 紙の花のプロジェクト PAPER EDEN コンセプトショップ PLANT etc.. edenworksのプロダクトを扱う総合webshopです。'
+            }
+        })
+    </script>
+</body>
+</html>
